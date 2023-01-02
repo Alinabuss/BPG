@@ -2,7 +2,7 @@
 
 **Setup**
 1. install docker (including docker-compose)
-2. navigate to NLP/webapp
+2. navigate to BPG/webapp
 3. run "docker-compose up" or "docker-compose up --build"
     - If there are any problems, try "docker-compose down --volumes" or "docker kill $(docker ps -q)"
     - the build process may take a while

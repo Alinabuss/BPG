@@ -1,18 +1,4 @@
-# NLP
-
-The "Learning Forest" was developed in the course of an NLP project at DHBW Mannheim by the following team members:
-
-- Alina Buss (4163246)
-- Andreas Dichter (6104795)
-- Can Berkil (2087362)
-- Paula Hölterhoff (9633299)
-- Phillip Lange (5920414)
-- Simon Schmid (9917195)
-
-**Development Teams**
-- Webapp (Alina Buss, Andreas Dichter)
-- Answer-Checker (Can Berkil, Simon Schmid)
-- Question-Generator (Paula Hölterhoff, Phillip Lange)
+# BPG
 
 **Setup**
 1. install docker (including docker-compose)

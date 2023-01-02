@@ -5,10 +5,10 @@
 {% block heading %}Learning{% endblock %}
 {% block body %}
 
-<form action = "http://localhost:5000/text" method = "POST"
+<form action = "/text" method = "POST"
    enctype = "multipart/form-data" >
    <div class="d-flex">
-      <select class="form-select me-3" name= lectures method="POST" action="http://localhost:5000/text">
+      <select class="form-select me-3" name= lectures method="POST" action="/text">
       {% for lecture in lectures %}
       <option value= "{{lecture}}" SELECTED>{{lecture}}</option>"
       {% endfor %}

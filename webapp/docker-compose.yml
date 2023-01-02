@@ -1,3 +1,4 @@
+version: "3.8"
 services:
     db:
         image: postgres:alpine
@@ -9,31 +10,70 @@ services:
             - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 #            - ./sql/data.sql:/docker-entrypoint-initdb.d/2-data.sql
 #            - ./sql/foreign_keys_and_updates.sql:/docker-entrypoint-initdb.d/3-foreign_keys_and_updates.sql
+        networks:
+            - NLP
 
 
     adminer:
         image: adminer
         restart: always
-        ports:
-            - 1234:8080
+#        ports:
+#            - 1234:8080
         depends_on:
             - "db"
+        networks:
+            - NLP
+            - web
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.NLP-adminer.entrypoints=http"
+            - "traefik.http.routers.NLP-adminer.rule=Host(`fimtasticfour-adminer.lcoy.de`)"
+            - "traefik.http.routers.NLP-adminer.middlewares=redirect-https@file"
+            - "traefik.http.routers.NLP-adminer-secure.entrypoints=https"
+            - "traefik.http.routers.NLP-adminer-secure.rule=Host(`fimtasticfour-adminer.lcoy.de)"
+            - "traefik.http.routers.NLP-adminer-secure.tls=true"
+            - "traefik.http.routers.NLP-adminer-secure.tls.certresolver=lets-encrypt"
+            - "traefik.http.services.NLP-adminer-secure.loadbalancer.server.port=8080"
+            - "traefik.docker.network=web"
+
 
     memcached:
         image: 'memcached'
-        ports:
-            - '11211:11211'
+#        ports:
+#            - '11211:11211'
         restart: always
-        
+        networks:
+            - NLP
+
     app:
 
         build:
             context: ../
             dockerfile: ./webapp/Dockerfile
-        ports:
-            - 5000:5000
+#        ports:
+#            - 5000:5000
 #        volumes:
 #            - ./app:/usr/src/app
         depends_on:
             - "db"
             - memcached
+        networks:
+            - NLP
+            - web
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.NLP-webapp.entrypoints=http"
+            - "traefik.http.routers.NLP-webapp.rule=Host(`fimtasticfour.lcoy.de`)"
+            - "traefik.http.routers.NLP-webapp.middlewares=redirect-https@file"
+            - "traefik.http.routers.NLP-webapp-secure.entrypoints=https"
+            - "traefik.http.routers.NLP-webapp-secure.rule=Host(`fimtasticfour.lcoy.de`)"
+            - "traefik.http.routers.NLP-webapp-secure.tls=true"
+            - "traefik.http.routers.NLP-webapp-secure.tls.certresolver=lets-encrypt"
+            - "traefik.http.services.NLP-webapp-secure.loadbalancer.server.port=5000"
+            - "traefik.docker.network=web"
+
+networks:
+    web:
+        name: web
+        external: true
+    NLP:

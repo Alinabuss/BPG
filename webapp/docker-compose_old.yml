@@ -1,0 +1,39 @@
+services:
+    db:
+        image: postgres:alpine
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: securepwd
+            POSTGRES_USER: postgres
+        volumes:
+            - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+#            - ./sql/data.sql:/docker-entrypoint-initdb.d/2-data.sql
+#            - ./sql/foreign_keys_and_updates.sql:/docker-entrypoint-initdb.d/3-foreign_keys_and_updates.sql
+
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 1234:8080
+        depends_on:
+            - "db"
+
+    memcached:
+        image: 'memcached'
+        ports:
+            - '11211:11211'
+        restart: always
+        
+    app:
+
+        build:
+            context: ../
+            dockerfile: ./webapp/Dockerfile
+        ports:
+            - 5000:5000
+#        volumes:
+#            - ./app:/usr/src/app
+        depends_on:
+            - "db"
+            - memcached
